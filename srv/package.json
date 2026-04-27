@@ -1,0 +1,19 @@
+{
+    "name": "test-microservice",
+	"description": "test-microservice",
+    "main": "server.js",
+    "dependencies": {
+        "@sap/xsenv": "latest",
+        "@sap/xssec": "latest",
+        "express": "^5.2.1",
+        "passport": "^0.7.0",
+        "@sap-cloud-sdk/http-client": "^4.5.1"
+
+    },
+    "scripts": {
+        "start": "node server.js"
+    },    
+    "engines": {
+        "node": ">=18"
+    }
+}

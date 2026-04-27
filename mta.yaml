@@ -1,0 +1,41 @@
+_schema-version: "3.2"
+ID: test-microservice
+version: 1.0.0
+
+
+modules:
+  - name: test-microservice-srv
+    type: nodejs
+    path: srv
+    parameters:
+      memory: 256M
+      disk-quota: 256M
+    properties:
+      SAP_JWT_TRUST_ACL: >
+        [
+          {
+            "clientid": "*",
+            "identityzone": "*"
+          }
+        ]
+    requires:
+      - name: test-microservice-xsuaa
+      - name: test-microservice-destination-service
+
+resources:
+  - name: test-microservice-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: test-microservice-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+  - name: test-microservice-xsuaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: test-microservice-xsuaa
+      service-plan: application
