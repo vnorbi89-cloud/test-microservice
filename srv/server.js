@@ -20,16 +20,20 @@ app.post(
   passport.authenticate("JWT", { session: false }),
   async (req, res) => {
     try{
-      console.log("----0--------0--------0-------0-----------0-------0--------0--------")
+      console.log("----autoflow--------x--------0-------0-----------0-------0--------0--------")
         const before = req.body.data?.beforeImage;
         const current = req.body.data?.currentImage;
-        const data = req.body;
+        
+        console.log("Body:", JSON.stringify(req.body));
+        
+      console.log("----0--------0--------0-------0-----------0-------x--------x--------")
+       const data = req.body;
         const subject = current.subject;
         const caseuuid = current.id;
         const newSubject = `${subject} LOW`;
         
         const tokenResponse = await executeHttpRequest(
-            { destinationName: "C4C_Case" },
+            { destinationName: "C4C__Case" },
             {
                 method: "GET",
                 url: "sap/c4c/api/v1/iam-service/token"
@@ -49,7 +53,7 @@ app.post(
         console.log(JSON.stringify(current))
 
         const caseResponse = await executeHttpRequest(
-            { destinationName: "C4C_Case" },
+            { destinationName: "C4C__Case" },
             {
               method: "PATCH",
               url: `/sap/c4c/api/v1/case-service/cases/${caseuuid}`,
@@ -68,15 +72,43 @@ app.post(
               timeout: 10000
             }
         );
-
-        res.status(200).send('OK');
+        res.status(200).send('OK');         
 
     } catch (error){
         console.log(error);      
-        res.status(500).send("Internal Server Error");
+        res.status(500).send("Internal Server Error 123");
     }
-
 })
+
+app.post(
+  "/onTestWebHook",
+  passport.authenticate("JWT", { session: false }),
+  async (req, res) => {
+    try{
+      console.log("----webhook--------x--------0-------0-----------0-------0--------0--------")
+        const before = req.body.beforeImage;
+        const current = req.body.currentImage;
+        console.log("Body:", JSON.stringify(req.body));
+        
+      console.log("----0--------0--------0-------0-----------0-------x--------x--------")
+          return res.status(200).json({
+            "data": { },
+            "noChanges": true,
+            "info": [
+              {
+                "code": "sap.crm.service.caseService.10000",
+                "message": "test warning message",
+                "severity": "WARNING"
+              }
+            ] 
+          });   
+
+    } catch (error){
+        console.log(error);      
+        res.status(500).send("Internal Server Error 123");
+    }
+})
+
 
 const port = process.env.PORT || 3000;
 app.listen(port, function () {
